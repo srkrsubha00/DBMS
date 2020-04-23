@@ -1,0 +1,37 @@
+Create table Customers(
+CustomerID Number (1) PRIMARY KEY,
+CustomerName Varchar2 (20),
+ContactName Varchar2 (20),
+Address Varchar2 (25),
+City Varchar2 (10),
+PostalCode Number (5),
+Country Varchar2 (10));
+
+Create table Suppliers(
+SupplierID Number (1) PRIMARY KEY,
+SupplierName Varchar2 (30),
+ContactName Varchar2 (20),
+Address Varchar2 (25),
+City Varchar2 (10),
+PostalCode Number (5),
+Country Varchar2 (10));
+
+Insert into Customers values(1,'Alfreds Futter','Maria Anders','Obere Str.57','Berlin',12209,'Germany');
+Insert into Customers values(2,'Ana Helados','Ana Trujillo','Avda. Construction2222','Mexico D.F',05021,'Mexico');
+Insert into Customers values(3,'Antonio Moreno','Antonio Moreno','Mataderos 2312','Mexico D.F',05023,'Mexico');
+
+
+Insert into Suppliers values(1,'Exotic Liquid','Charlotte Cooper','49Gilbert St.','Berlin',12209,'Germany');
+Insert into Suppliers values(2,'New Orleans Cajun Delights','Shelley Burke','P.O. Box 78934','Mexico D.F',05023,'Mexico');
+Insert into Suppliers values(3,'Grandma Kellys Homestead','Regina Murphy','707 Oxford Rd.','Ann Arbor',48104,'USA');
+
+1.Select City from Customers UNION select City from Suppliers;
+
+2.Select City from Customers UNION ALL select City from Suppliers;
+
+3.Select City from Customers where country='Germany' UNION ALL select City from Suppliers where Country='Germany';
+
+4.Select C.CustomerName,S.SupplierName from Customers C,Suppliers S where C.City=S.City INTERSECT Select C.CustomerName,S.SupplierName from Suppliers S ,Customers C where C.City=S.City;
+(Select Customers.CustomerName, Suppliers.SupplierName from Customers, Suppliers where Customers.City = Suppliers.City;)
+
+5.Select Country from Suppliers MINUS Select distinct Country from Customers;
