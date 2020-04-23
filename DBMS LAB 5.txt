@@ -1,0 +1,92 @@
+create table ZIPCODES5(
+ZIP number primary key,
+CITY varchar2(20)
+);
+
+create table EMPLOYEES5(
+ENO number primary key,
+ENAME varchar2(10),
+ZIP number references ZIPCODES5(ZIP),
+HDATE date
+);
+
+create table CUSTOMERS(
+CNO number primary key,
+CNAME varchar2(10),
+STREET varchar2(10),
+ZIP number references ZIPCODES5(ZIP),
+PHONE number
+);
+
+create table PARTS5(
+PNO number primary key,
+PNAME varchar2(10),
+QOH number,
+PRICE number,
+LEVEL1 number
+);
+
+create table ORDERS5(
+ONO number primary key,
+CNO number references CUSTOMERS(CNO),
+ENO number references EMPLOYEES5(ENO),
+PRECEIVED date,
+Shipped date
+);
+
+
+create table ODETAILS5(
+ONO number references ORDERS5(ONO),
+PNO number references PARTS5(PNO),
+QTY number,
+primary key(ONO,PNO)
+);
+
+insert into ZIPCODES5 values (1000,'chandannagar');
+insert into ZIPCODES5 values (1001,'kolkata');
+insert into ZIPCODES5 values (1002,'chinsurah');
+insert into ZIPCODES5 values (1003,'behala');
+insert into ZIPCODES5 values (1005,'mumbai');
+
+insert into EMPLOYEES5 values (1,'suresh',1005,'10-DEC-05');
+insert into EMPLOYEES5 values (2,'ramesh',1002,'10-JAN-01');
+insert into EMPLOYEES5 values (3,'paresh',1003,'15-JUL-06');
+insert into EMPLOYEES5 values (4,'sooraj',1005,'10-DEC-07');
+insert into EMPLOYEES5 values (5,'mogli',1001,'12-FEB-05');
+
+insert into PARTS5 values (1,'nut',500,10,2);
+insert into PARTS5 values (2,'bolt',600,11,3);
+insert into PARTS5 values (3,'shaft',25,27000,2);
+insert into PARTS5 values (4,'roter',10,50000,3);
+insert into PARTS5 values (5,'blades',45,15000,4);
+
+insert into customers values (1,'tarzan','walls',1000,23654897);
+insert into customers values (2,'aman','lords',1001,22224897);
+insert into customers values (3,'moeen','leads',1002,23654456);
+insert into customers values (4,'amla','sydney',1003,65654897);
+insert into customers values (5,'saswata','wellington',1005,26654897);
+
+insert into orders5 values (1,1,1,'10-DEC-15','15-JUL-21');
+insert into orders5 values (2,1,2,'11-DEC-15','15-JAN-20');
+insert into orders5 values (3,2,3,'12-JAN-19','15-JUL-19');
+insert into orders5 values (4,4,2,'01-MAY-18','10-MAY-19');
+insert into orders5 values (5,5,5,'10-DEC-15','16-JUL-21');
+
+insert into odetails5 values (1,1,200);
+insert into odetails5 values (2,3,10);
+insert into odetails5 values (3,2,400);
+insert into odetails5 values (4,4,10);
+insert into odetails5 values (5,5,30);
+
+------------------------------------------------------------------------------------------------------------------------
+
+select pno, pname from parts5 where price < 20;
+select pno from odetails5;
+select * from customers where cname like 's%';
+select ono, cname from customers join orders5 on orders5.cno=customers.cno where orders5.shipped > sysdate;
+select cname, ename from employees5 join orders5 on employees5.eno=orders5.eno join customers on customers.cno = orders5.cno;
+select ename from employees5 where hdate=(select min(hdate) from employees5);
+select pno,pname,price from parts5 where price > 20000 order by pno;
+select parts5.pno,pname,parts5.price*odetails5.qty as Sales from parts5 join odetails5 on parts5.pno=odetails5.pno;
+select qoh from parts5 join odetails5 on parts5.pno=odetails5.pno where parts5.pno=5;
+select eno from employees5 join zipcodes5 on employees5.zip=zipcodes5.zip where city='mumbai';
