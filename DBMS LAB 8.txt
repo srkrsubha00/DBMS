@@ -1,0 +1,77 @@
+create table salespeople_59(
+SNUM number primary key,
+SNAME varchar2(20),
+CITY varchar2(20),
+COMM number);
+
+create table customer_59(
+CNUM number primary key,
+CNAME varchar2(20),
+CITY varchar2(20),
+RATING number,
+SNUM number references salespeople_59(SNUM));
+
+create table order_59(
+ONUM number primary key,
+AMT number,
+ODATE date,
+CNUM number references customer_59(CNUM),
+SNUM number references salespeople_59(SNUM));
+
+insert into salespeople_59 values(1001, 'Peel', 'London', 0.12);
+insert into salespeople_59 values(1002, 'Serees', 'San Jose', 0.13);
+insert into salespeople_59 values(1004, 'Motika', 'London', 0.11);
+insert into salespeople_59 values(1007, 'Rifkin', 'Barcelona', 0.15);
+insert into salespeople_59 values(1003, 'Axelrod', 'New York', 0.10);
+
+insert into customer_59 values(2001, 'Hoffman', 'London', 100, 1001);
+insert into customer_59 values(2002, 'Giovanni', 'Rome', 200, 1003);
+insert into customer_59 values(2003, 'Liu', 'San Jose', 200, 1002);
+insert into customer_59 values(2004, 'Grass', 'Berlin', 300, 1002);
+insert into customer_59 values(2006, 'Clemens', 'London', 100, 1001);
+insert into customer_59 values(2008, 'Cisneros', 'San Jose', 300, 1007);
+insert into customer_59 values(2007, 'Pereira', 'Rome', 100, 1004);
+
+insert into order_59 values(3001, 18.69, '10-Mar-90', 2008, 1007);
+insert into order_59 values(3003, 767.19, '10-Mar-90', 2001, 1001);
+insert into order_59 values(3002, 1901.10, '10-Mar-90', 2007, 1004);
+insert into order_59 values(3005, 5160.45, '10-Mar-90', 2003, 1002);
+insert into order_59 values(3006, 1698.16, '10-Mar-90', 2008, 1007);
+insert into order_59 values(3009, 1713.23, '10-Apr-90', 2002, 1003);
+insert into order_59 values(3007, 75.75, '10-Apr-90', 2004, 1002);
+insert into order_59 values(3008, 4723.00, '10-May-90', 2006, 1001);
+insert into order_59 values(3010, 1309.95, '10-Jun-90', 2004, 1002);
+insert into order_59 values(3011, 9891.88, '10-Jun-90', 2006, 1001);
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+1.
+A. create view view1 as 
+	select CNAME from customer_59 where RATING = (select max(RATING) from customer_59);
+
+   select * from view1;
+
+B. create view view2 as
+	select city, count(*) as "NUMBER" from salespeople_59 group by CITY;
+
+   select * from view2;
+
+C. create view view3 as
+	select SNUM, sum(AMT) as "Total", avg(AMT) as "AVERAGE" from order_59 group by SNUM;
+
+   select * from view3;
+
+D. create view view4 as
+	select salespeople_59.SNAME, customer_59.CNAME from salespeople_59, customer_59 where salespeople_59.SNUM = customer_59.SNUM;
+
+   select * from view4;
+
+2. create view Salespeople_Customer_Orders as
+	select salespeople_59.SNAME as "SalespeopleName", customer_59.CNAME as "CustomerName", order_59.ONUM as "OrderNumber"
+	from salespeople_59, customer_59, order_59 where salespeople_59.SNUM = order_59.SNUM and customer_59.CNUM = order_59.CNUM;
+
+   select * from Salespeople_Customer_Orders;
+
+3. create view salespeople as
+	select SNUM, COMM from salespeople_59 where COMM between 0.10 and 0.20;
+   insert into salespeople values(1006,0.17);
+   update salespeople set COMM =0.12 where COMM = 0.10;
